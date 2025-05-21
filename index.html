@@ -8,7 +8,6 @@
 </head>
 <body>
 
-
   <div class="keys">
     <div data-key="65" class="key">
       <kbd>A</kbd>
@@ -64,9 +63,9 @@
     e.target.classList.remove('playing');
   }
 
-  function playSound(e) {
-    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
-    const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
+  function playSoundByKeyCode(keyCode) {
+    const audio = document.querySelector(`audio[data-key="${keyCode}"]`);
+    const key = document.querySelector(`div[data-key="${keyCode}"]`);
     if (!audio) return;
 
     key.classList.add('playing');
@@ -74,11 +73,26 @@
     audio.play();
   }
 
+  function handleKeyDown(e) {
+    playSoundByKeyCode(e.keyCode);
+  }
+
+  function handleClick(e) {
+    // Находим ближайший родительский элемент с классом 'key'
+    const keyElement = e.target.closest('.key');
+    if (!keyElement) return;
+    
+    const keyCode = keyElement.getAttribute('data-key');
+    playSoundByKeyCode(keyCode);
+  }
+
   const keys = Array.from(document.querySelectorAll('.key'));
   keys.forEach(key => key.addEventListener('transitionend', removeTransition));
-  window.addEventListener('keydown', playSound);
+  window.addEventListener('keydown', handleKeyDown);
+  
+  // Добавляем обработчик клика для всех элементов с классом 'key'
+  document.querySelector('.keys').addEventListener('click', handleClick);
 </script>
-
 
 </body>
 </html>
